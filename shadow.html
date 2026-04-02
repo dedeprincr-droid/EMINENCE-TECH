@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMINENCE TECH // ATOMIC</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+body{
+background:#000;
+color:#0ff;
+font-family:Consolas,monospace;
+overflow-x:hidden;
+}
+
+/* BOOT SCREEN */
+#boot{
+position:fixed;
+width:100%;
+height:100vh;
+background:#000;
+color:#0f0;
+padding:40px;
+z-index:999;
+font-size:14px;
+overflow:hidden;
+}
+#bootText{white-space:pre-line}
+
+/* CANVAS */
+canvas{
+position:fixed;
+top:0;
+left:0;
+}
+
+/* CORE */
+.eclipse{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:500px;
+height:500px;
+border-radius:50%;
+background:radial-gradient(circle,#001111 0%,#000 60%);
+box-shadow:0 0 200px #0ff;
+z-index:-2;
+animation:pulse 8s infinite;
+}
+@keyframes pulse{
+0%,100%{box-shadow:0 0 200px #0ff;}
+50%{box-shadow:0 0 350px #0ff;}
+}
+
+/* CURSOR */
+.cursor-glow{
+position:fixed;
+width:300px;
+height:300px;
+background:radial-gradient(circle, rgba(0,255,255,0.15) 0%, transparent 70%);
+pointer-events:none;
+z-index:9999;
+transform:translate(-50%,-50%);
+}
+
+/* NAV */
+nav{
+position:fixed;
+top:0;
+width:100%;
+padding:20px;
+text-align:center;
+background:rgba(0,0,0,0.7);
+z-index:10;
+}
+nav a{
+margin:0 20px;
+color:#0ff;
+text-decoration:none;
+}
+nav a:hover{text-shadow:0 0 15px #0ff}
+
+/* SECTION */
+section{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:120px 20px;
+text-align:center;
+}
+
+/* CARD */
+.card{
+max-width:900px;
+padding:60px;
+border-radius:30px;
+background:rgba(0,255,255,0.05);
+box-shadow:0 0 40px #0ff;
+transition:0.3s;
+}
+.card:hover{box-shadow:0 0 60px #0ff;}
+
+/* REVEAL FIXED */
+.reveal{
+opacity:0;
+transform:translateY(60px);
+transition:0.6s;
+}
+.reveal.active{
+opacity:1;
+transform:translateY(0);
+}
+
+/* PASSWORD */
+#passwordScreen{
+display:none;
+position:fixed;
+width:100%;
+height:100vh;
+background:#000;
+z-index:20;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+#errorMsg{margin-top:15px}
+
+/* WELCOME */
+#welcome{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:#000;
+position:fixed;
+width:100%;
+z-index:10;
+}
+#enterBtn{
+margin-top:40px;
+padding:15px 40px;
+border:1px solid #0ff;
+background:transparent;
+color:#0ff;
+cursor:pointer;
+display:none;
+}
+#enterBtn:hover{
+background:#0ff;
+color:#000;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="boot"><div id="bootText"></div></div>
+
+<canvas id="matrix"></canvas> <canvas id="stars"></canvas>
+
+<div class="eclipse"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<audio loop id="music">
+<source src="https://files.catbox.moe/o9baiv.mp3">
+</audio>
+
+<div id="welcome">
+<h1 id="typing"></h1>
+<button id="enterBtn">ENTER THE GARDEN</button>
+</div>
+
+<div id="passwordScreen">
+<h2>ENTER GARDEN CODE</h2>
+<input type="password" id="passwordInput">
+<button id="accessBtn">ENTER THE GARDEN</button>
+<p id="errorMsg"></p>
+</div>
+
+<nav>
+<a href="#home">HOME</a>
+<a href="#creations">CREATIONS</a>
+<a href="#about">ABOUT</a>
+</nav>
+
+<section id="home">
+<h2>SPONSORED BY SHADOW GARDEN</h2>
+<div class="card reveal">
+<p>Digital Dominance Through Code.</p>
+</div>
+</section>
+
+<section id="creations">
+<h2>CREATIONS</h2>
+<div class="card reveal">
+<p>CONSIDER YOUR SELF ATOMIC 
+    ACCORDING TO DIGITAL DOMINANCE THROUGH CODE THE GARDEN WILL SOON ESTABLISH A AUTOMATION BOT NAMED EMINENCE MD
+    OTHER PROJECTS WILL COME ABOUT NAMELY CHATING BOT BAN, UNBAN APP I MY SELF WILL ESTABLISH A DOMINANCE SO GREAT 
+    MY NAME SHALL BE REMEBERED AND MARKED IN HISTORY.
+MY TARGET IS TO SET UP LINKS WITH OTHER DEVS LIKE MY SELF AND ESTABLISH A TECH LINK WHICH WILL ACRRY US TO TECH DOMINANCEI SHADOW THE LEADER OF THE EMINENCE
+OR POPULARLY  </p>TO BE KNOWN AS SHADOW GARDEN.
+</div>
+</section>
+
+<section id="about">
+<h2>ABOUT</h2>
+<div class="card reveal">
+<p>Founded March 28th 2026
+    I THE FOUNDER SHADOW ALSO KNOWN AS DEDEKUMA PRINCE IN THE NORMAL WORLD WAS BORN ON THE 20TH OF MAY 2009.
+I WILL GO ON AND BE THE GREATEST OF ALL I LEAVE YOU WITH THIS:
+
+I        AM           ATOMIC💥💥💥💥💥💥💥💥💥💥💥 </p>
+</div>
+</section>
+
+<script>
+
+/* ===== DOM ===== */
+const bootEl = document.getElementById("boot");
+const bootText = document.getElementById("bootText");
+const typing = document.getElementById("typing");
+const enterBtn = document.getElementById("enterBtn");
+const welcome = document.getElementById("welcome");
+const passwordScreen = document.getElementById("passwordScreen");
+const passwordInput = document.getElementById("passwordInput");
+const errorMsg = document.getElementById("errorMsg");
+const accessBtn = document.getElementById("accessBtn");
+const music = document.getElementById("music");
+
+/* ===== BOOT FIXED ===== */
+const bootLines=[
+"Initializing Garden Core...",
+"Loading Systems...",
+"Accessing Protocol...",
+"System Ready."
+];
+
+let b=0;
+function runBoot(){
+if(b<bootLines.length){
+bootText.innerHTML+=bootLines[b]+"\n";
+b++;
+setTimeout(runBoot,800);
+}else{
+setTimeout(()=>{
+bootEl.style.display="none";
+},1000);
+}}
+runBoot();
+
+/* ===== TYPE ===== */
+const text="WELCOME TO EMINENCE TECH";
+let i=0;
+function type(){
+if(i<text.length){
+typing.innerHTML+=text[i];
+i++;
+setTimeout(type,40);
+}else{
+enterBtn.style.display="inline-block";
+}}
+type();
+
+/* ===== ENTER ===== */
+enterBtn.onclick=()=>{
+welcome.style.display="none";
+passwordScreen.style.display="flex";
+};
+
+/* ===== PASSWORD ===== */
+function checkPassword(){
+const val=passwordInput.value;
+
+if(val==="EMINENCE"){
+errorMsg.style.color="#0f0";
+errorMsg.innerText="ACCESS GRANTED";
+
+setTimeout(()=>{
+passwordScreen.style.display="none";
+music.play();
+},800);
+
+}else{
+errorMsg.style.color="red";
+errorMsg.innerText="ACCESS DENIED";
+}
+}
+
+accessBtn.onclick = checkPassword;
+
+passwordInput.addEventListener("keypress",e=>{
+if(e.key==="Enter")checkPassword();
+});
+
+/* ===== MATRIX ===== */
+const matrix=document.getElementById("matrix");
+const mctx=matrix.getContext("2d");
+matrix.width=innerWidth;
+matrix.height=innerHeight;
+
+const letters="01ECLIPSE";
+const fontSize=14;
+const columns=matrix.width/fontSize;
+const drops=Array(Math.floor(columns)).fill(1);
+
+setInterval(()=>{
+mctx.fillStyle="rgba(0,0,0,0.05)";
+mctx.fillRect(0,0,matrix.width,matrix.height);
+
+mctx.fillStyle="#0f0";
+mctx.font=fontSize+"px monospace";
+
+drops.forEach((y,i)=>{
+const text=letters[Math.random()*letters.length|0];
+mctx.fillText(text,i*fontSize,y*fontSize);
+if(y*fontSize>matrix.height&&Math.random()>0.975)drops[i]=0;
+drops[i]++;
+});
+},33);
+
+/* ===== CURSOR ===== */
+document.addEventListener("mousemove",e=>{
+cursorGlow.style.left=e.clientX+"px";
+cursorGlow.style.top=e.clientY+"px";
+});
+
+/* ===== REVEAL ===== */
+window.addEventListener("scroll",()=>{
+document.querySelectorAll(".reveal").forEach(el=>{
+if(el.getBoundingClientRect().top<window.innerHeight-100){
+el.classList.add("active");
+}
+});
+});
+
+</script>
+
+</body>
+</html>
